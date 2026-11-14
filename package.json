@@ -1,0 +1,27 @@
+{
+  "name": "emergent-society-explainer",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Interactive explainer for the Emergent Society simulation, built from its real code and recorded runs.",
+  "type": "module",
+  "scripts": {
+    "data": "node tools/build-data.mjs",
+    "dev": "vite",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.app.json",
+    "build": "npm run typecheck && vite build",
+    "preview": "vite preview"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "dependencies": {
+    "vue": "3.5.44"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "@vitejs/plugin-vue": "6.0.10",
+    "typescript": "5.9.3",
+    "vite": "8.3.5",
+    "vue-tsc": "3.3.13"
+  }
+}

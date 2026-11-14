@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Records scenes from the real EmergentSociety.Core for the explainer site.
+    Run it through the explainer's "npm run data" script, which passes the output folder.
+  -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <RootNamespace>EmergentSociety.Explainer.Trace</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\EmergentSociety.Core\EmergentSociety.Core.csproj" />
+  </ItemGroup>
+
+</Project>

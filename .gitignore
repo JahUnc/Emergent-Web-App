@@ -1,0 +1,4 @@
+# Dependencies and build output for the explainer site.
+node_modules/
+dist/
+*.local
