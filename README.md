@@ -4,8 +4,6 @@ An interactive companion site for **Emergent Society**, an agent-based simulatio
 
 The site shows how the simulation works: its systems, how they connect through shared state, and recorded scenes you can play back. Nothing on the site re-implements a rule. Every scene is recorded from the real simulation, and every link and line of code is read from its source when the data is generated.
 
-![A recorded world, partway through its first 150 ticks](docs/world.png)
-
 ## What's on the site
 
 ### World
@@ -23,7 +21,6 @@ Every system in the simulation, what it changes, and what it uses. Systems on th
 
 The map also has six **feedback loops**, the chains that make behavior emerge, like friends gathering where food is or crowding turning into feuds between groups.
 
-![The systems map with a feedback loop selected](docs/systems-map.png)
 
 ### An entity
 What a single entity can perceive (food, friends and partners within 1 cell, shelters and trees within 3), what it keeps track of, and the systems behind each part of its life.
@@ -31,7 +28,7 @@ What a single entity can perceive (food, friends and partners within 1 cell, she
 ### Near another entity
 A recorded meeting between two founders: they bond, miss their first chance at a child, conceive, and raise one. Below it, each part is broken out, covering how friendship forms, every condition a pair must meet to conceive, who counts as family, and how birth works. Each case shows the real result and the one line of code that decided it.
 
-![Checking whether a pair can have a child](docs/scene.png)
+
 
 Press `Ctrl K` (`Cmd K` on a Mac) or `/` anywhere to jump to any system, piece of shared state, loop or screen.
 
