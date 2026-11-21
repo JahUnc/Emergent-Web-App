@@ -62,15 +62,15 @@ const curve = computed(() => {
         <svg viewBox="0 0 600 124" role="img" :aria-label="`Relationship rising to ${curve.end.value.toFixed(2)} by ${curve.end.label}`">
           <defs>
             <linearGradient id="bond-fill" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0" stop-color="#ff6fae" stop-opacity="0.28" />
-              <stop offset="1" stop-color="#ff6fae" stop-opacity="0" />
+              <stop offset="0" stop-color="#ff4f9a" stop-opacity="0.32" />
+              <stop offset="1" stop-color="#ff4f9a" stop-opacity="0" />
             </linearGradient>
           </defs>
           <line v-for="g in 5" :key="g" x1="0" x2="600" :y1="110 - (g - 1) * 24" :y2="110 - (g - 1) * 24" class="grid" />
           <path :d="curve.area" fill="url(#bond-fill)" />
           <path :d="curve.line" class="line" pathLength="1" />
           <circle :cx="curve.end.x" :cy="curve.end.y" r="4.5" class="end" />
-          <text x="12" y="16" class="label">reached {{ curve.end.value.toFixed(2) }} by {{ curve.end.label }}</text>
+          <text x="12" y="16" class="label">REACHED {{ curve.end.value.toFixed(2) }} BY {{ curve.end.label.toUpperCase() }}</text>
         </svg>
         <p class="small">Each tick: fade {{ percent(S.RelationshipDecay!) }} percent, then add {{ S.RelationshipGain }}. That is why the curve bends instead of climbing in a straight line.</p>
       </div>
@@ -81,11 +81,11 @@ const curve = computed(() => {
 </template>
 
 <style scoped>
-.chart { gap: 6px; padding: 14px; }
+.chart { gap: 8px; padding: 18px; }
 svg { width: 100%; height: auto; display: block; }
-.grid { stroke: var(--line); }
-.line { fill: none; stroke: var(--female); stroke-width: 2.5; stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 1.4s ease forwards; }
+.grid { stroke: var(--line); stroke-dasharray: 2 5; }
+.line { fill: none; stroke: var(--female); stroke-width: 2; filter: drop-shadow(0 0 4px var(--female)); stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 1.4s ease forwards; }
 @keyframes draw { to { stroke-dashoffset: 0; } }
 .end { fill: var(--female); filter: drop-shadow(0 0 6px var(--female)); }
-.label { fill: var(--muted); font: 12px var(--mono); }
+.label { fill: var(--female); font: 500 11px var(--mono); letter-spacing: 0.08em; }
 </style>

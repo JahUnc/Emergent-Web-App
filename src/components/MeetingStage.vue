@@ -84,8 +84,10 @@ function draw(now: number) {
       const i = y * gw + x;
       const food = lerp(f.food[i]!, n.food[i]!, tween);
       ctx.fillStyle = foodColor(food);
-      ctx.fillRect(ox + x * cell + 2 * dpr, oy + y * cell + 2 * dpr, cell - 4 * dpr, cell - 4 * dpr);
-      ctx.fillStyle = 'rgba(221,228,243,0.35)';
+      ctx.beginPath();
+      ctx.rect(ox + x * cell + 3 * dpr, oy + y * cell + 3 * dpr, cell - 6 * dpr, cell - 6 * dpr);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(220,245,255,0.45)';
       ctx.fillText(`${food.toFixed(1)}/${capacity[i]}`, ox + (x + 1) * cell - 8 * dpr, oy + (y + 1) * cell - 8 * dpr);
     }
   }
@@ -109,7 +111,7 @@ function draw(now: number) {
   const a = placed.find((p) => p.e.id === 1);
   const b = placed.find((p) => p.e.id === 2);
   if (a && b && f.relationship > 0) {
-    ctx.strokeStyle = `rgba(255,255,255,${0.15 + f.relationship * 0.7})`;
+    ctx.strokeStyle = `rgba(255,197,61,${0.2 + f.relationship * 0.7})`;
     ctx.lineWidth = (1 + f.relationship * 6) * dpr;
     ctx.setLineDash([3 * dpr, 5 * dpr]);
     ctx.beginPath();
@@ -125,14 +127,14 @@ function draw(now: number) {
     const r = cell * (child ? 0.1 : 0.16);
     drawGlow(ctx, x, y, r, e.sex === 'Female' ? PALETTE.female : PALETTE.male);
     if (e.pregnant) {
-      ctx.fillStyle = '#fff';
+      ctx.fillStyle = PALETTE.pregnant;
       ctx.beginPath();
       ctx.arc(x, y, r * 0.42, 0, Math.PI * 2);
       ctx.fill();
     }
     const bw = cell * 0.42;
     const by = y + r + 8 * dpr;
-    ctx.fillStyle = 'rgba(255,255,255,0.12)';
+    ctx.fillStyle = 'rgba(220,245,255,0.14)';
     ctx.fillRect(x - bw / 2, by, bw, 5 * dpr);
     ctx.fillStyle = e.energy < S.HungerThreshold! * 10 ? PALETTE.warn : PALETTE.ok;
     ctx.fillRect(x - bw / 2, by, bw * Math.min(1, e.energy / 10), 5 * dpr);
@@ -169,13 +171,16 @@ watch(at, () => {
       <canvas ref="canvas-el" role="img" :aria-label="`Recorded meeting at ${frameLabel(frame.tick)}: ${log[at]!.text}`" />
       <div class="hud"><span>seed <b>{{ meeting.seed }}</b></span><span>relationship <b>{{ frame.relationship.toFixed(3) }}</b></span></div>
       <div class="transport">
-        <button type="button" @click="toggle">{{ playing ? 'Pause' : at >= last ? 'Replay' : 'Play' }}</button>
-        <button type="button" :disabled="at >= last" @click="go(at + 1)">Next tick</button>
+        <button type="button" class="play" :aria-label="playing ? 'Pause' : at >= last ? 'Replay' : 'Play'" @click="toggle">
+          <svg v-if="playing" viewBox="0 0 16 16" aria-hidden="true"><rect x="4" y="3" width="3" height="10" rx="1" /><rect x="9" y="3" width="3" height="10" rx="1" /></svg>
+          <svg v-else viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.2v9.6a.6.6 0 0 0 .9.5l7.6-4.8a.6.6 0 0 0 0-1L5.9 2.7a.6.6 0 0 0-.9.5Z" /></svg>
+        </button>
+        <button type="button" class="btn" :disabled="at >= last" @click="go(at + 1)">Next tick</button>
         <input type="range" min="0" :max="last" :value="at" aria-label="Tick" @input="go(+($event.target as HTMLInputElement).value)" />
         <span class="tick">{{ frameLabel(frame.tick) }}</span>
       </div>
     </div>
-    <div class="card stack">
+    <div class="card stack logcard">
       <h3>What happened, tick by tick</h3>
       <div ref="log-el" class="log">
         <button v-for="(row, i) in log" :key="i" type="button" :class="{ on: i === at, ev: row.notable }" @click="go(i)">
@@ -189,15 +194,17 @@ watch(at, () => {
 
 <style scoped>
 canvas { aspect-ratio: 980 / 600; }
-.transport { display: flex; gap: 10px; align-items: center; padding: 10px 14px; border-top: 1px solid var(--line); background: rgba(10, 15, 29, 0.9); flex-wrap: wrap; }
-.transport button { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 4px 12px; cursor: pointer; }
-.transport button:disabled { opacity: 0.4; cursor: default; }
-input[type='range'] { flex: 1; min-width: 160px; accent-color: var(--female); }
-.tick { font-family: var(--mono); font-size: 0.8rem; min-width: 7ch; }
-.log { display: flex; flex-direction: column; gap: 2px; max-height: 300px; overflow: auto; font-size: 0.86rem; }
-.log button { all: unset; cursor: pointer; display: grid; grid-template-columns: 6ch 1fr; gap: 10px; padding: 4px 8px; border-radius: 6px; color: var(--muted); }
+.play { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--hud); background: rgba(79, 216, 255, 0.12); color: var(--hud); cursor: pointer; flex: none; box-shadow: 0 0 14px rgba(79, 216, 255, 0.35), inset 0 0 10px rgba(79, 216, 255, 0.25); transition: box-shadow 0.2s, background 0.2s; }
+.play:hover { background: rgba(79, 216, 255, 0.25); box-shadow: 0 0 24px rgba(79, 216, 255, 0.6); }
+.play svg { width: 15px; height: 15px; fill: currentColor; }
+.tick { min-width: 7ch; }
+.logcard h3 { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.16em; color: var(--hud); }
+.log { display: flex; flex-direction: column; gap: 2px; max-height: 330px; overflow: auto; font-size: 0.88rem; }
+.log button { all: unset; cursor: pointer; display: grid; grid-template-columns: 6ch 1fr; gap: 12px; padding: 6px 10px; color: var(--faint); transition: background 0.2s; border-left: 2px solid transparent; }
+.log button:hover { background: rgba(79, 216, 255, 0.06); }
 .log button.ev { color: var(--text); }
-.log button.on { background: var(--panel-hi); color: var(--text); }
-.log button:focus-visible { outline: 2px solid var(--male); }
-.log b { font-family: var(--mono); font-weight: 600; font-size: 0.76rem; color: var(--muted); }
+.log button.on { background: linear-gradient(90deg, rgba(79, 216, 255, 0.16), transparent); color: var(--text); border-left-color: var(--hud); }
+.log button:focus-visible { outline: 1.5px solid var(--select); }
+.log b { font-family: var(--mono); font-weight: 400; font-size: 0.74rem; color: var(--muted); padding-top: 2px; text-transform: uppercase; }
+.log button.on b { color: var(--hud); text-shadow: var(--hud-glow); }
 </style>

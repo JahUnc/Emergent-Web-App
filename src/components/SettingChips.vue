@@ -39,12 +39,14 @@ function describe(name: string) {
 </template>
 
 <style scoped>
-.settings { display: flex; flex-direction: column; gap: 8px; }
-.chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; }
-.chip { border: 1px solid var(--line); background: var(--ink-raised); border-radius: 8px; padding: 6px 10px; font-size: 0.82rem; max-width: 100%; }
-.chip[open] { border-color: var(--line-hi); }
+.settings { display: flex; flex-direction: column; gap: 10px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; }
+.chip { border: 1px solid var(--line); background: rgba(1, 7, 13, 0.6); border-radius: var(--radius-sm); padding: 5px 10px; font-size: 0.8rem; max-width: 100%; transition: border-color 0.2s, box-shadow 0.2s; }
+.chip:hover { border-color: var(--line-hi); }
+.chip[open] { border-color: var(--hud); box-shadow: 0 0 14px rgba(79, 216, 255, 0.2); }
 summary { cursor: pointer; list-style: none; }
 summary::-webkit-details-marker { display: none; }
-.v { font-family: var(--mono); color: var(--select); font-weight: 600; margin-left: 6px; }
-p { color: var(--muted); font-size: 0.8rem; margin-top: 6px; max-width: 46ch; }
+summary code { color: var(--muted); }
+.v { font-family: var(--mono); color: var(--select); margin-left: 8px; text-shadow: 0 0 8px rgba(255, 197, 61, 0.5); }
+p { color: var(--muted); font-size: 0.84rem; margin-top: 6px; max-width: 46ch; }
 </style>

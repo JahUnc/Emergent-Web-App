@@ -1,6 +1,7 @@
 <script setup lang="ts">
 /**
- * The app shell: header, the current screen, the footer and the command palette.
+ * The app shell: header, the current screen, the footer, the command palette, and the one-time start-up
+ * sequence.
  *
  * Screens are async components, so each one (and the data it imports) is its own chunk. After the first
  * screen paints, the rest are fetched while the browser is idle, so moving between screens is instant.
@@ -9,6 +10,7 @@
  */
 import { computed, defineAsyncComponent, onMounted, type Component } from 'vue';
 import AppHeader from './components/AppHeader.vue';
+import BootSequence from './components/BootSequence.vue';
 import BuildFooter from './components/BuildFooter.vue';
 import CommandPalette from './components/CommandPalette.vue';
 import { useRouter, type RouteName } from './composables/useRouter';
@@ -48,4 +50,5 @@ onMounted(() => {
   </main>
   <BuildFooter />
   <CommandPalette />
+  <BootSequence />
 </template>

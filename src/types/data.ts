@@ -188,6 +188,16 @@ export interface WorldFrame {
 }
 
 /** A decoded seed, ready to draw. */
+/** How an entity died, as counted by Simulation.RemoveDead. */
+export type DeathCause = 'killed' | 'cold' | 'starved' | 'oldAge';
+
+/** One death in a recorded world: the first frame the entity is gone, and the cell it was last in. */
+export interface WorldDeath {
+  frame: number;
+  cell: number;
+  cause: DeathCause;
+}
+
 export interface WorldData {
   seed: number;
   width: number;
@@ -198,6 +208,8 @@ export interface WorldData {
   natural: number[];
   stats: SeedStats;
   frames: WorldFrame[];
+  /** Every death in the recording, in the order the entities first appeared. */
+  deaths: WorldDeath[];
 }
 
 /** One line of code that proves a link exists. */

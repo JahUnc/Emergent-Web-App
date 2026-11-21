@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EmergentSociety.Explainer.Trace")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ec9cee1913c726d202b54eb6019f36582941baee")]
 [assembly: System.Reflection.AssemblyProductAttribute("EmergentSociety.Explainer.Trace")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EmergentSociety.Explainer.Trace")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

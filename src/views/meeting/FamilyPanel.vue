@@ -87,7 +87,7 @@ const subtitle = (key: string) => {
             @click="kin.has(n.key) && (selected = n.key)"
             @keydown.enter.space.prevent="kin.has(n.key) && (selected = n.key)"
           >
-            <rect :x="n.x" :y="n.y" :width="BOX_W" :height="BOX_H" rx="8" />
+            <rect :x="n.x" :y="n.y" :width="BOX_W" :height="BOX_H" rx="2" />
             <text :x="n.x + 10" :y="n.y + 19">{{ n.label }}</text>
             <text v-if="subtitle(n.key)" class="sub" :x="n.x + 10" :y="n.y + 35">{{ subtitle(n.key) }}</text>
           </g>
@@ -101,14 +101,14 @@ const subtitle = (key: string) => {
 
 <style scoped>
 .tree svg { width: 100%; height: auto; display: block; }
-path { stroke: #3a4767; fill: none; }
-.note { fill: var(--muted); font: 10.5px var(--mono); }
-.node rect { fill: var(--ink-raised); stroke: var(--line); transition: stroke 0.2s; }
-.node text { fill: var(--text); font: 13px var(--body); }
-.node .sub { fill: var(--muted); font: 10.5px var(--mono); }
+path { stroke: var(--line-hi); fill: none; stroke-width: 1.4; }
+.note { fill: var(--muted); font: 600 11px var(--body); }
+.node rect { fill: rgba(2, 12, 20, 0.92); stroke: var(--line-hi); transition: stroke 0.2s, fill 0.2s; }
+.node text { fill: var(--text); font: 600 13px var(--body); }
+.node .sub { fill: var(--muted); font: 400 9.5px var(--mono); letter-spacing: 0.06em; text-transform: uppercase; }
 .node.pick { cursor: pointer; outline: none; }
-.node.pick rect { stroke: #3a4a70; }
-.node.pick:hover rect, .node.pick:focus-visible rect { stroke: var(--male); }
-.node.sel rect { stroke: var(--male); stroke-width: 2; }
-.node.me rect { stroke: var(--female); stroke-width: 2; }
+.node.pick rect { stroke: rgba(63, 140, 255, 0.4); }
+.node.pick:hover rect, .node.pick:focus-visible rect { stroke: var(--hud); }
+.node.sel rect { stroke: var(--select); stroke-width: 1.8; fill: rgba(255, 197, 61, 0.14); filter: drop-shadow(0 0 6px rgba(255, 197, 61, 0.6)); }
+.node.me rect { stroke: var(--female); stroke-width: 1.8; filter: drop-shadow(0 0 6px rgba(255, 79, 154, 0.6)); }
 </style>

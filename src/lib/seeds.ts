@@ -7,7 +7,7 @@
  * format is described in SeedRecorder.cs; this file is the only reader of it.
  */
 import { S } from './catalog';
-import type { SeedRecord, WorldData, WorldEntity, WorldFrame } from '../types/data';
+import type { SeedRecord, WorldData, WorldDeath, WorldEntity, WorldFrame } from '../types/data';
 
 const files = import.meta.glob<SeedRecord>('../data/seeds/seed-*.json', { import: 'default' });
 
@@ -114,6 +114,7 @@ export function decode(record: SeedRecord): WorldData {
   }
   for (const [frame, cell] of record.killings) frames[frame]?.kills.push(cell);
 
+  const deaths: WorldDeath[] = [];
   let at = foodBytes;
   for (let id = 1; id <= record.entityCount; id++) {
     const first = bytes[at]!;
@@ -146,12 +147,16 @@ export function decode(record: SeedRecord): WorldData {
     }
 
     if (first > 0) for (let f = first; f <= ticks; f++) frames[f]!.born++;
-    if (cause !== 'alive') for (let f = last + 1; f <= ticks; f++) frames[f]!.died[cause]++;
+    if (cause !== 'alive') {
+      for (let f = last + 1; f <= ticks; f++) frames[f]!.died[cause]++;
+      // The entity is last seen on frame "last" in this cell, and is gone from the next frame on.
+      deaths.push({ frame: Math.min(last + 1, ticks), cell, cause });
+    }
   }
   if (at !== bytes.length) throw new Error(`Seed ${record.seed}: entity section has an unexpected size.`);
 
   return {
     seed: record.seed, width, height, ticks, foodMax,
-    trees: record.trees, natural: record.natural, stats: record.stats, frames,
+    trees: record.trees, natural: record.natural, stats: record.stats, frames, deaths,
   };
 }

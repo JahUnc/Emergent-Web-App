@@ -68,11 +68,12 @@ const stateLeft = 500 - STATE_WIDTH / 2;
 </script>
 
 <template>
-  <div class="scroll">
+  <div class="scroll systems-map-anchor">
     <svg class="map" :viewBox="`0 0 ${VIEW_WIDTH} ${layout.height}`" role="group" aria-label="Systems map: what each system changes and what it uses">
-      <text :x="LEFT_X" y="34" class="col" text-anchor="end">changes</text>
-      <text x="500" y="34" class="col" text-anchor="middle">shared state</text>
-      <text :x="RIGHT_X" y="34" class="col">uses</text>
+      <text :x="LEFT_X" y="38" class="col w" text-anchor="end">Changes</text>
+      <text x="500" y="38" class="col" text-anchor="middle">Shared state</text>
+      <text :x="RIGHT_X" y="38" class="col r">Uses</text>
+      <line x1="40" x2="960" y1="50" y2="50" class="rule" />
       <template v-for="h in layout.phaseHeadings" :key="h.text">
         <text :x="LEFT_X" :y="h.y" class="grp" text-anchor="end">{{ h.text }}</text>
         <text :x="RIGHT_X" :y="h.y" class="grp">{{ h.text }}</text>
@@ -136,7 +137,7 @@ const stateLeft = 500 - STATE_WIDTH / 2;
         @click="select({ kind: 'state', key: s.key })"
         @keydown.enter.space.prevent="select({ kind: 'state', key: s.key })"
       >
-        <rect :x="stateLeft" :y="layout.stateY[s.key]! - 12" :width="STATE_WIDTH" height="24" rx="12" />
+        <rect :x="stateLeft" :y="layout.stateY[s.key]! - 12" :width="STATE_WIDTH" height="24" rx="2" />
         <text x="500" :y="layout.stateY[s.key]! + 4.5" text-anchor="middle">{{ s.label }}</text>
       </g>
     </svg>
@@ -144,29 +145,34 @@ const stateLeft = 500 - STATE_WIDTH / 2;
 </template>
 
 <style scoped>
-.scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: radial-gradient(120% 100% at 50% 0%, #111a31 0%, var(--ink) 75%); view-transition-name: systems-map; }
+.scroll { --bk: 22px; --bk-w: 2px; --bk-c: var(--hud); overflow-x: auto; border: 1px solid var(--line-hi); border-radius: var(--radius); background: var(--brackets), linear-gradient(rgba(79, 216, 255, 0.04) 1px, transparent 1px) 0 0 / 24px 24px, linear-gradient(90deg, rgba(79, 216, 255, 0.04) 1px, transparent 1px) 0 0 / 24px 24px, radial-gradient(100% 70% at 50% 0%, #07263a 0%, #01070d 80%); box-shadow: 0 0 60px -10px rgba(79, 216, 255, 0.2); view-transition-name: systems-map; scroll-margin-top: 84px; }
 .map { display: block; width: 100%; min-width: 760px; height: auto; }
-.col { fill: var(--muted); font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; }
-.grp { fill: var(--faint); font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; }
-.e { fill: none; stroke-width: 1.2; transition: opacity 0.25s, stroke-width 0.25s; animation: fade-in 0.6s ease backwards; animation-delay: calc(var(--i) * 4ms); }
+.col { fill: var(--hud); font-family: var(--display); font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; }
+.col.w { fill: var(--female); }
+.col.r { fill: var(--male); }
+.rule { stroke: var(--line-hi); stroke-dasharray: 2 6; }
+.grp { fill: var(--faint); font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; }
+.e { fill: none; stroke-width: 1.1; transition: opacity 0.3s, stroke-width 0.3s; animation: fade-in 0.6s ease backwards; animation-delay: calc(var(--i) * 4ms); }
 .e.w { stroke: var(--female); }
 .e.r { stroke: var(--male); }
-.e.on { opacity: 0.95; stroke-width: 2.4; }
-.e.off { opacity: 0.05; }
-.e.flow { stroke-dasharray: 6 6; animation: flow 0.9s linear infinite; }
+.e.on { opacity: 1; stroke-width: 2.2; filter: drop-shadow(0 0 3px currentColor); }
+.e.w.on { color: var(--female); }
+.e.r.on { color: var(--male); }
+.e.off { opacity: 0.06; }
+.e.flow { stroke: var(--select); color: var(--select); stroke-dasharray: 6 6; animation: flow 0.9s linear infinite; filter: drop-shadow(0 0 5px rgba(255, 197, 61, 0.9)); }
 @keyframes flow { to { stroke-dashoffset: -12; } }
 @keyframes fade-in { from { opacity: 0; } }
-.n { cursor: pointer; transition: opacity 0.25s; outline: none; }
-.n text { fill: var(--text); font-family: var(--body); font-size: 13.5px; }
-.n.dim { opacity: 0.22; }
+.n { cursor: pointer; transition: opacity 0.3s; outline: none; }
+.n text { fill: var(--text); font-family: var(--body); font-weight: 500; font-size: 13.5px; }
+.n.dim { opacity: 0.2; }
 .n:focus-visible text { text-decoration: underline; }
-.pin { fill: #0e1527; stroke-width: 2; }
+.pin { fill: #01070d; stroke-width: 1.8; }
 .pin.w { stroke: var(--female); }
 .pin.r { stroke: var(--male); }
-.n.focus .pin { fill: currentColor; }
-.n.focus.sys .pin.w { fill: var(--female); }
-.n.focus.sys .pin.r { fill: var(--male); }
-.st rect { fill: #0e1527; stroke: #2c3858; transition: stroke 0.2s; }
-.st text { font-size: 13px; }
-.st.focus rect { stroke: var(--select); stroke-width: 2; }
+.n.focus.sys .pin.w { fill: var(--female); filter: drop-shadow(0 0 5px var(--female)); }
+.n.focus.sys .pin.r { fill: var(--male); filter: drop-shadow(0 0 5px var(--male)); }
+.n.focus text { font-weight: 700; }
+.st rect { fill: rgba(4, 20, 32, 0.9); stroke: var(--line-hi); transition: stroke 0.2s, fill 0.2s; }
+.st text { font-size: 12.5px; }
+.st.focus rect { stroke: var(--select); stroke-width: 1.6; fill: rgba(255, 197, 61, 0.14); filter: drop-shadow(0 0 6px rgba(255, 197, 61, 0.6)); }
 </style>

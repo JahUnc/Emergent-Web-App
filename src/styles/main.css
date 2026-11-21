@@ -2,91 +2,261 @@
   Global styles: design tokens, base elements, and the few layout classes every screen shares.
   Component-specific styles live in each component's scoped style block.
 
-  One visual world: a dark observation deck looking down at the grid. Female entities are pink and male
-  entities blue, matching the Viewer; amber marks whatever is selected.
+  Visual world: a holographic heads-up display, as if the simulation were being run from a lab console.
+  Arc-reactor cyan draws the interface itself (lines, frames, readouts). Everything the simulation
+  produces glows in its own color on top of it, so data always outshines chrome.
+
+  Color meaning is fixed across every screen:
+    cyan     the interface: frames, rules, labels
+    pink     female entities, and "changes" on the systems map
+    blue     male entities, and "uses" on the systems map
+    gold     whatever is selected, and the primary action
+    teal     food
+    red      deaths, failed checks
 */
 :root {
-  --ink: #080c16;
-  --ink-raised: #0c1222;
-  --panel: #0f1526;
-  --panel-hi: #13203c;
-  --line: #222c45;
-  --line-hi: #3a4767;
-  --text: #dde4f3;
-  --muted: #8b96b2;
-  --faint: #5d6886;
-  --female: #ff6fae;
-  --male: #5aa9ff;
-  --food: #2d7a68;
-  --select: #f2b84b;
-  --good: #59d39a;
-  --bad: #ff7a7a;
-  --display: 'Chakra Petch', 'Segoe UI', system-ui, sans-serif;
-  --body: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+  /* Surfaces, darkest to lightest. Panels are translucent so the grid behind shows through like glass. */
+  --ink: #02070d;
+  --ink-raised: rgba(8, 28, 44, 0.55);
+  --panel: rgba(6, 22, 36, 0.62);
+  --panel-hi: rgba(79, 216, 255, 0.1);
+  --code-bg: rgba(1, 8, 14, 0.82);
+  --line: rgba(79, 216, 255, 0.16);
+  --line-hi: rgba(79, 216, 255, 0.38);
+
+  /* The interface color, at a few strengths. */
+  --hud: #4fd8ff;
+  --hud-glow: 0 0 12px rgba(79, 216, 255, 0.55);
+
+  /* Text. */
+  --text: #dcf5ff;
+  --muted: #84aabd;
+  --faint: #4b6d7e;
+
+  /* Meaning. */
+  --female: #ff4f9a;
+  --male: #3f8cff;
+  --food: #1fb5d6;
+  --select: #ffc53d;
+  --good: #3dffb4;
+  --bad: #ff3b4f;
+  --wood: #ff9d3d;
+
+  /* Type. */
+  --display: 'Michroma', 'Eurostile', 'Segoe UI', system-ui, sans-serif;
+  --body: 'Saira', 'Segoe UI', system-ui, sans-serif;
   --mono: 'JetBrains Mono', Consolas, ui-monospace, monospace;
-  --radius: 12px;
+
+  --radius: 3px;
+  --radius-sm: 2px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /*
+    Corner brackets, the signature HUD frame. Eight thin gradients draw an L in each corner of any element,
+    with no extra markup. Layer them over an element's own background: background: var(--brackets), <bg>.
+    These three set their size, thickness and color; the gradients themselves are declared below.
+  */
+  --bk: 14px;
+  --bk-w: 1.5px;
+  --bk-c: var(--hud);
+
+  /* A measuring ruler: a long tick every 50px and a short one every 10px. */
+  --ruler:
+    repeating-linear-gradient(90deg, rgba(79, 216, 255, 0.55) 0 1px, transparent 1px 50px) left bottom / 100% 9px no-repeat,
+    repeating-linear-gradient(90deg, rgba(79, 216, 255, 0.28) 0 1px, transparent 1px 10px) left bottom / 100% 4px no-repeat;
+
   color-scheme: dark;
 }
 
+/*
+  The bracket gradients are declared on every element, not once on :root, so that each element's own
+  --bk, --bk-w and --bk-c are used. A custom property set on :root would resolve with :root's values.
+*/
+*, *::before, *::after {
+  --brackets:
+    linear-gradient(var(--bk-c), var(--bk-c)) top left / var(--bk) var(--bk-w) no-repeat,
+    linear-gradient(var(--bk-c), var(--bk-c)) top left / var(--bk-w) var(--bk) no-repeat,
+    linear-gradient(var(--bk-c), var(--bk-c)) top right / var(--bk) var(--bk-w) no-repeat,
+    linear-gradient(var(--bk-c), var(--bk-c)) top right / var(--bk-w) var(--bk) no-repeat,
+    linear-gradient(var(--bk-c), var(--bk-c)) bottom left / var(--bk) var(--bk-w) no-repeat,
+    linear-gradient(var(--bk-c), var(--bk-c)) bottom left / var(--bk-w) var(--bk) no-repeat,
+    linear-gradient(var(--bk-c), var(--bk-c)) bottom right / var(--bk) var(--bk-w) no-repeat,
+    linear-gradient(var(--bk-c), var(--bk-c)) bottom right / var(--bk-w) var(--bk) no-repeat;
+}
+
 *, *::before, *::after { box-sizing: border-box; }
-html, body { margin: 0; background: var(--ink); color: var(--text); font-family: var(--body); font-size: 16px; line-height: 1.55; }
-body { min-height: 100%; -webkit-font-smoothing: antialiased; }
-a { color: var(--male); }
+html, body { margin: 0; background: var(--ink); color: var(--text); font-family: var(--body); font-size: 16px; line-height: 1.6; }
+body {
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  /* A blueprint grid under everything, lit from above by the projector, fading out toward the bottom. */
+  background:
+    radial-gradient(1100px 600px at 50% -180px, rgba(79, 216, 255, 0.16), transparent 70%) no-repeat,
+    linear-gradient(rgba(79, 216, 255, 0.045) 1px, transparent 1px) 0 0 / 48px 48px,
+    linear-gradient(90deg, rgba(79, 216, 255, 0.045) 1px, transparent 1px) 0 0 / 48px 48px,
+    var(--ink);
+}
+/* Scanlines and a vignette, held still over the viewport, so the page reads as projected light. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.16) 0 1px, transparent 1px 3px),
+    radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+}
+::selection { background: rgba(79, 216, 255, 0.35); color: #fff; }
+a { color: var(--hud); text-underline-offset: 3px; }
 button { font: inherit; color: inherit; }
 code { font-family: var(--mono); font-size: 0.86em; }
-:focus-visible { outline: 2px solid var(--male); outline-offset: 2px; }
-h1, h2, h3 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; text-wrap: balance; margin: 0; }
-h1 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); line-height: 1.12; }
-h2 { font-size: 1.35rem; }
-h3 { font-size: 1.05rem; }
-p { margin: 0; max-width: 65ch; }
+:focus-visible { outline: 1.5px solid var(--select); outline-offset: 3px; }
 
-.wrap { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+/* Headings are set in a wide, machined face and glow faintly, like text on a visor. */
+h1, h2, h3 { font-family: var(--display); font-weight: 400; text-wrap: balance; margin: 0; color: var(--text); text-transform: uppercase; }
+h1 { font-size: clamp(1.9rem, 4vw, 3.2rem); line-height: 1.08; letter-spacing: 0.01em; text-shadow: 0 0 28px rgba(79, 216, 255, 0.45); }
+h2 { font-size: clamp(1.15rem, 2vw, 1.5rem); line-height: 1.2; letter-spacing: 0.03em; text-shadow: 0 0 18px rgba(79, 216, 255, 0.35); }
+h3 { font-size: 0.98rem; line-height: 1.3; letter-spacing: 0.04em; }
+p { margin: 0; max-width: 68ch; }
+
+.wrap { max-width: 1320px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 32px); }
 .stack { display: flex; flex-direction: column; gap: 14px; }
 .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-.grid-2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 22px; align-items: start; }
+.grid-2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 28px; align-items: start; }
 @media (max-width: 920px) { .grid-2 { grid-template-columns: 1fr; } }
 
-.eyebrow { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-.lede { color: var(--muted); font-size: 1.02rem; }
+/* A readout label: mono, tracked out, prefixed with a lit square like a status light. */
+.eyebrow { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--hud); }
+.eyebrow::before { content: ''; width: 6px; height: 6px; background: var(--hud); box-shadow: var(--hud-glow); flex: none; }
+.lede { color: var(--muted); font-size: 1.05rem; line-height: 1.65; }
 .lede strong { color: var(--text); font-weight: 600; }
-.small { font-size: 0.86rem; color: var(--muted); }
-.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; }
+.small { font-size: 0.88rem; color: var(--muted); }
 
-.stage {
-  position: relative;
+/* A glass panel with lit corner brackets. */
+.card {
+  --bk-c: rgba(79, 216, 255, 0.7);
+  background: var(--brackets), linear-gradient(180deg, rgba(79, 216, 255, 0.06), transparent 40%), var(--panel);
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: var(--radius);
+  padding: 22px;
+  backdrop-filter: blur(6px);
+}
+
+/* The intro block at the top of each screen: big title on the left, the explanation beside it. */
+.intro-split { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 18px 56px; align-items: end; }
+.intro-split .lede { padding-bottom: 4px; }
+@media (max-width: 920px) { .intro-split { grid-template-columns: 1fr; } }
+.title-block { display: flex; flex-direction: column; gap: 16px; }
+
+/*
+  A stage holds a live simulation canvas. It is the boldest frame on the site: heavy gold corner
+  brackets, a measuring ruler along the top edge, and a scan line that sweeps down once when it appears.
+*/
+.stage {
+  --bk: 22px;
+  --bk-w: 2px;
+  --bk-c: var(--hud);
+  position: relative;
   overflow: hidden;
-  background: radial-gradient(120% 140% at 50% 0%, #111a31 0%, var(--ink) 70%);
+  border: 1px solid var(--line-hi);
+  border-radius: var(--radius);
+  background: var(--brackets), radial-gradient(120% 120% at 50% 0%, #07263a 0%, #01070d 72%);
+  box-shadow: 0 0 0 1px rgba(1, 7, 13, 0.9), 0 0 60px -10px rgba(79, 216, 255, 0.25), inset 0 0 80px rgba(79, 216, 255, 0.05);
+}
+.stage::before {
+  content: '';
+  display: block;
+  height: 18px;
+  margin: 0 28px;
+  background: var(--ruler);
+  border-bottom: 1px solid var(--line);
+}
+.stage::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 90px;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, rgba(79, 216, 255, 0.14) 80%, rgba(79, 216, 255, 0.8) 99%, transparent);
+  opacity: 0;
+  animation: scan 1.6s 0.25s var(--ease) both;
+}
+@keyframes scan {
+  0% { opacity: 0; top: -90px; }
+  15% { opacity: 1; }
+  100% { opacity: 0; top: 100%; }
 }
 .stage canvas { display: block; width: 100%; }
-.hud { position: absolute; left: 14px; top: 12px; font-family: var(--mono); font-size: 0.75rem; color: var(--muted); pointer-events: none; display: flex; gap: 14px; flex-wrap: wrap; }
-.hud b { color: var(--text); font-weight: 600; }
 
+/* Readouts pinned over a canvas, top right. */
+.hud { position: absolute; right: 18px; top: 30px; font-family: var(--mono); font-size: 0.72rem; color: var(--muted); pointer-events: none; display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; text-transform: uppercase; letter-spacing: 0.08em; }
+.hud span { background: rgba(1, 7, 13, 0.78); border: 1px solid var(--line-hi); padding: 2px 9px; backdrop-filter: blur(6px); }
+.hud b { color: var(--hud); font-weight: 500; text-shadow: var(--hud-glow); }
+
+/* Transport controls under a stage. */
+.transport { display: flex; gap: 12px; align-items: center; padding: 12px 18px; border-top: 1px solid var(--line); background: rgba(1, 7, 13, 0.85); flex-wrap: wrap; }
+.transport input[type='range'] { flex: 1; min-width: 160px; accent-color: var(--hud); }
+.transport .tick { font-family: var(--mono); font-size: 0.78rem; color: var(--hud); min-width: 9ch; letter-spacing: 0.06em; }
+
+/*
+  Buttons. The primary action is a lit gold slab with clipped corners; everything else is a thin cyan
+  outline. Both are uppercase and tracked, like console keys.
+*/
 .cta {
-  display: inline-flex; align-items: center; gap: 8px; width: fit-content;
-  text-decoration: none; color: var(--text); background: transparent; cursor: pointer;
-  border: 1px solid var(--select); border-radius: 999px; padding: 6px 16px;
-  font-family: var(--display); font-weight: 600;
+  display: inline-flex; align-items: center; gap: 10px; width: fit-content;
+  text-decoration: none; color: #1a1200; background: var(--select); cursor: pointer;
+  border: 0; padding: 10px 22px;
+  font-family: var(--body); font-weight: 700; font-size: 0.84rem; letter-spacing: 0.14em; text-transform: uppercase;
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  box-shadow: 0 0 24px rgba(255, 197, 61, 0.4);
+  transition: filter 0.2s, box-shadow 0.2s;
 }
-.cta:hover { background: #1f1b12; }
+.cta:hover { filter: brightness(1.12); box-shadow: 0 0 36px rgba(255, 197, 61, 0.7); }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(79, 216, 255, 0.04); border: 1px solid var(--line-hi); border-radius: var(--radius-sm); padding: 6px 14px;
+  color: var(--hud); cursor: pointer; font-family: var(--body); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s, color 0.2s;
+}
+.btn:hover { border-color: var(--hud); background: rgba(79, 216, 255, 0.12); box-shadow: 0 0 18px rgba(79, 216, 255, 0.3); color: #fff; }
+.btn:disabled { opacity: 0.35; cursor: default; box-shadow: none; background: transparent; }
 
-.pill { display: inline-block; font-family: var(--mono); font-size: 0.68rem; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); width: fit-content; }
+.pill { display: inline-block; font-family: var(--mono); font-size: 0.68rem; padding: 2px 8px; border: 1px solid var(--line-hi); color: var(--muted); width: fit-content; text-transform: uppercase; letter-spacing: 0.1em; }
 
-.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.85rem; color: var(--muted); }
-.legend span { display: inline-flex; align-items: center; gap: 6px; }
-.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-.dot.f { background: var(--female); box-shadow: 0 0 8px var(--female); }
-.dot.m { background: var(--male); box-shadow: 0 0 8px var(--male); }
-.swatch { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.legend { display: flex; gap: 8px 20px; flex-wrap: wrap; font-family: var(--mono); font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.dot.f { background: var(--female); box-shadow: 0 0 10px var(--female); }
+.dot.m { background: var(--male); box-shadow: 0 0 10px var(--male); }
+.swatch { width: 12px; height: 12px; display: inline-block; }
 
-/* Syntax colors used by the code viewer. */
-.tk-c { color: #5f6c8c; } .tk-k { color: #c792ea; } .tk-s { color: #c3e88d; } .tk-n { color: #f78c6c; } .tk-t { color: #82aaff; }
+kbd { font-family: var(--mono); font-size: 0.7rem; border: 1px solid var(--line-hi); border-radius: var(--radius-sm); padding: 1px 6px; background: rgba(1, 7, 13, 0.8); color: var(--hud); }
+
+/* Syntax colors used by the code viewer, in the same lit palette. */
+.tk-c { color: #3f6476; font-style: italic; } .tk-k { color: #4fd8ff; } .tk-s { color: #3dffb4; } .tk-n { color: #ffc53d; } .tk-t { color: #9ab9ff; }
+
+/* Every screen opens the same way: the title resolves in like a projection, then the rest settles. */
+.page-title { view-transition-name: page-title; animation: title-in 1s var(--ease) both; }
+.intro-split .lede, .intro-copy, .title-block .eyebrow { animation: fade-in 0.9s 0.2s var(--ease) both; }
+@keyframes title-in {
+  0% { opacity: 0; letter-spacing: 0.2em; filter: blur(6px); }
+  60% { opacity: 1; }
+  100% { opacity: 1; filter: blur(0); }
+}
+@keyframes fade-in { from { opacity: 0; } }
 
 /* View transitions: the screen cross-fades, the heading morphs. */
 ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.35s; }
 ::view-transition-group(page-title) { animation-duration: 0.45s; }
+
+@media (max-width: 600px) {
+  .hud { right: 10px; top: 26px; font-size: 0.62rem; gap: 4px; }
+  .hud span { padding: 1px 6px; }
+  .stage::before { margin: 0 18px; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }

@@ -58,16 +58,19 @@ watch([active, () => props.lines], () => {
 </template>
 
 <style scoped>
-.viewer { background: #0a0f1d; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
-.bar { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
-.file { font-family: var(--mono); font-size: 0.74rem; color: var(--muted); }
-.file b { color: var(--text); font-weight: 600; }
+.viewer { background: var(--code-bg); border: 1px solid var(--line-hi); border-radius: var(--radius); overflow: hidden; box-shadow: inset 0 0 40px rgba(79, 216, 255, 0.04); }
+.bar { display: flex; align-items: center; gap: 10px; padding: 9px 14px; border-bottom: 1px solid var(--line); flex-wrap: wrap; background: rgba(79, 216, 255, 0.04); }
+.file { font-family: var(--mono); font-size: 0.72rem; color: var(--faint); }
+.file b { color: var(--hud); font-weight: 500; }
 .tabs { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
-.tabs button { background: transparent; border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px; font-family: var(--mono); font-size: 0.72rem; color: var(--muted); cursor: pointer; }
-.tabs button[aria-selected='true'] { color: var(--text); border-color: var(--male); }
-pre { margin: 0; padding: 10px 0; font-family: var(--mono); font-size: 0.78rem; line-height: 1.6; max-height: 440px; overflow: auto; }
-.ln { display: block; padding-right: 14px; white-space: pre; border-left: 3px solid transparent; }
-.ln i { display: inline-block; width: 3.6em; text-align: right; padding-right: 1.1em; color: #46516d; font-style: normal; user-select: none; }
-.ln.hl { background: rgba(90, 169, 255, 0.14); border-left-color: var(--male); }
-.ln.hl.fail { background: rgba(255, 111, 174, 0.14); border-left-color: var(--female); }
+.tabs button { background: transparent; border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 2px 9px; font-family: var(--mono); font-size: 0.7rem; color: var(--muted); cursor: pointer; }
+.tabs button:hover { border-color: var(--line-hi); color: var(--text); }
+.tabs button[aria-selected='true'] { color: var(--hud); border-color: var(--hud); background: rgba(79, 216, 255, 0.12); box-shadow: 0 0 10px rgba(79, 216, 255, 0.25); }
+pre { margin: 0; padding: 12px 0; font-family: var(--mono); font-size: 0.8rem; line-height: 1.7; max-height: 440px; overflow: auto; }
+.ln { display: block; padding-right: 16px; white-space: pre; border-left: 2px solid transparent; }
+.ln i { display: inline-block; width: 3.6em; text-align: right; padding-right: 1.2em; color: #2c4a5a; font-style: normal; user-select: none; }
+.ln.hl { background: linear-gradient(90deg, rgba(63, 140, 255, 0.22), rgba(63, 140, 255, 0.04)); border-left-color: var(--male); }
+.ln.hl i { color: var(--male); }
+.ln.hl.fail { background: linear-gradient(90deg, rgba(255, 79, 154, 0.22), rgba(255, 79, 154, 0.04)); border-left-color: var(--female); }
+.ln.hl.fail i { color: var(--female); }
 </style>

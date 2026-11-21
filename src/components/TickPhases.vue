@@ -19,25 +19,28 @@ const phase = computed(() => phases[selected.value]!);
 </script>
 
 <template>
-  <div class="stack">
-    <div class="phases" role="tablist" aria-label="Tick phases">
+  <div class="stack ticks">
+    <!-- The phases sit on one thread, because they really are a sequence: each finishes before the next starts. -->
+    <div class="phases" role="tablist" aria-label="Tick phases" :style="{ '--at': selected }">
+      <span class="thread" aria-hidden="true"><span class="done" /></span>
       <button
         v-for="(p, i) in phases"
         :key="p.anchor"
         type="button"
         role="tab"
         :aria-selected="i === selected"
+        :class="{ past: i < selected }"
         @click="selected = i"
       >
-        <span class="n">{{ String(i + 1).padStart(2, '0') }}</span>
+        <span class="knot">{{ i + 1 }}</span>
         <span class="t">{{ p.title }}</span>
-        <span class="n">{{ p.sub }}</span>
+        <span class="s">{{ p.sub }}</span>
       </button>
     </div>
     <div class="grid-2">
-      <div class="card stack" role="tabpanel">
-        <span class="eyebrow">Phase {{ selected + 1 }} of 6 · {{ phase.sub }}</span>
-        <h3>{{ phase.title }}</h3>
+      <div class="card stack panel" role="tabpanel">
+        <span class="eyebrow">Phase {{ selected + 1 }} of 6</span>
+        <h3>{{ phase.title }}: {{ phase.sub.toLowerCase() }}</h3>
         <p class="lede">{{ phase.body }}</p>
       </div>
       <CodeDrawer :methods="['step']" :anchor="phase.anchor" />
@@ -46,11 +49,25 @@ const phase = computed(() => phases[selected.value]!);
 </template>
 
 <style scoped>
-.phases { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
-@media (max-width: 760px) { .phases { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-button { text-align: left; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; cursor: pointer; display: flex; flex-direction: column; gap: 2px; position: relative; overflow: hidden; }
-button[aria-selected='true'] { border-color: var(--male); background: var(--panel-hi); }
-button[aria-selected='true']::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: linear-gradient(90deg, var(--female), var(--male)); }
-.n { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
-.t { font-family: var(--display); font-weight: 600; font-size: 0.95rem; }
+.ticks { gap: 24px; }
+.phases { position: relative; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+.thread { position: absolute; left: calc(100% / 12); right: calc(100% / 12); top: 21px; height: 1px; background: var(--line-hi); }
+.done { position: absolute; inset: 0 auto 0 0; width: calc(var(--at) / 5 * 100%); background: var(--hud); box-shadow: var(--hud-glow); transition: width 0.6s var(--ease); }
+button { position: relative; background: transparent; border: 0; padding: 0 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; color: var(--muted); }
+.knot { position: relative; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--ink); border: 1px solid var(--line-hi); font-family: var(--mono); font-size: 0.86rem; color: var(--muted); transition: border-color 0.3s, background 0.3s, color 0.3s, box-shadow 0.3s; margin-bottom: 8px; }
+/* The selected phase gets a dashed outer ring that turns, like a lock-on. */
+.knot::before { content: ''; position: absolute; inset: -7px; border-radius: 50%; border: 1.5px dashed var(--select); opacity: 0; transform: scale(0.7); transition: opacity 0.3s, transform 0.4s var(--ease); }
+button.past .knot { border-color: var(--hud); color: var(--hud); }
+button[aria-selected='true'] .knot { background: rgba(255, 197, 61, 0.15); border-color: var(--select); color: var(--select); box-shadow: 0 0 22px rgba(255, 197, 61, 0.45), inset 0 0 12px rgba(255, 197, 61, 0.3); }
+button[aria-selected='true'] .knot::before { opacity: 1; transform: scale(1); animation: spin 8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+button:hover .knot { border-color: var(--hud); box-shadow: 0 0 14px rgba(79, 216, 255, 0.35); }
+.t { font-family: var(--body); font-weight: 600; font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text); }
+.s { font-size: 0.8rem; line-height: 1.3; }
+button[aria-selected='true'] .t { color: var(--select); text-shadow: 0 0 10px rgba(255, 197, 61, 0.5); }
+.panel h3 { font-size: 1.1rem; }
+@media (max-width: 760px) {
+  .phases { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 18px; }
+  .thread { display: none; }
+}
 </style>

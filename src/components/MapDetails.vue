@@ -77,7 +77,7 @@ const linkTarget = (e: MapEdge, side: 'from' | 'to') => e[side];
       <span class="eyebrow">System · {{ MAP.phases[system.s.phase] }} phase · {{ system.s.files.join(', ') }}</span>
       <h2>{{ system.s.label }}</h2>
       <p class="lede">{{ system.s.desc }}</p>
-      <button v-if="system.s.key in SCENES" type="button" class="cta" @click="openScene(system.s.key)">Open its scene →</button>
+      <button v-if="system.s.key in SCENES" type="button" class="btn" @click="openScene(system.s.key)">Open its scene</button>
 
       <section>
         <span class="eyebrow">Changes ({{ system.changes.length }})</span>
@@ -122,7 +122,7 @@ const linkTarget = (e: MapEdge, side: 'from' | 'to') => e[side];
       <span class="eyebrow">Shared state · {{ state.s.group }}</span>
       <h2>{{ state.s.label }}</h2>
       <p class="lede">{{ state.s.desc }}</p>
-      <button v-if="state.s.key in SCENES" type="button" class="cta" @click="openScene(state.s.key)">Open its scene →</button>
+      <button v-if="state.s.key in SCENES" type="button" class="btn" @click="openScene(state.s.key)">Open its scene</button>
       <section>
         <span class="eyebrow">Changed by ({{ state.changedBy.length }})</span>
         <div v-for="e in state.changedBy" :key="e.from" class="link w">
@@ -158,23 +158,25 @@ const linkTarget = (e: MapEdge, side: 'from' | 'to') => e[side];
 </template>
 
 <style scoped>
-.details { position: sticky; top: 76px; display: flex; flex-direction: column; gap: 14px; max-height: calc(100vh - 96px); overflow: auto; }
-h2 { font-size: 1.45rem; }
-section { display: flex; flex-direction: column; gap: 6px; }
-.link { display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--ink-raised); border-left-width: 3px; }
-.link.w { border-left-color: var(--female); }
-.link.r { border-left-color: var(--male); }
-.link.g { border-left-color: var(--select); }
+.details { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 16px; max-height: calc(100vh - 104px); overflow: auto; }
+h2 { font-size: 1.15rem; }
+section { display: flex; flex-direction: column; gap: 6px; padding-top: 14px; border-top: 1px dashed var(--line-hi); }
+.link { display: flex; flex-direction: column; gap: 3px; padding: 9px 12px 9px 14px; border-radius: var(--radius-sm); background: var(--code-bg); border: 1px solid var(--line); position: relative; overflow: hidden; }
+.link::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; }
+.link.w::before { background: var(--female); box-shadow: 0 0 8px var(--female); }
+.link.r::before { background: var(--male); box-shadow: 0 0 8px var(--male); }
+.link.g::before { background: var(--select); box-shadow: 0 0 8px var(--select); }
 .link button, .chain button { all: unset; cursor: pointer; font-weight: 600; color: var(--text); }
-.link button:hover, .chain button:hover, .link button:focus-visible, .chain button:focus-visible { color: var(--select); }
+.link button:hover, .chain button:hover, .link button:focus-visible, .chain button:focus-visible { color: var(--hud); text-shadow: var(--hud-glow); }
 code { font-size: 0.72rem; color: var(--muted); white-space: pre-wrap; word-break: break-word; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.chips button { background: var(--ink-raised); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; font-size: 0.82rem; cursor: pointer; }
-.chips button:hover, .chips button:focus-visible { border-color: var(--select); }
-.chain { list-style: none; margin: 0; padding: 0; counter-reset: step; display: flex; flex-direction: column; }
-.chain li { counter-increment: step; display: grid; grid-template-columns: 26px 1fr; gap: 2px 8px; padding: 7px 0; animation: rise 0.35s ease backwards; animation-delay: calc(var(--i) * 60ms); }
-.chain li::before { content: counter(step, decimal-leading-zero); grid-row: span 2; font-family: var(--mono); font-size: 0.72rem; color: var(--select); padding-top: 3px; }
-.chain li > span { font-size: 0.93rem; }
-@keyframes rise { from { opacity: 0; transform: translateY(4px); } }
+.chips button { background: transparent; border: 1px solid var(--line-hi); border-radius: var(--radius-sm); padding: 3px 10px; font-size: 0.82rem; cursor: pointer; }
+.chips button:hover, .chips button:focus-visible { border-color: var(--hud); color: var(--hud); }
+.chain { list-style: none; margin: 0; padding: 0; counter-reset: step; display: flex; flex-direction: column; position: relative; }
+.chain li { counter-increment: step; display: grid; grid-template-columns: 30px 1fr; gap: 2px 10px; padding: 8px 0; position: relative; animation: rise 0.4s var(--ease) backwards; animation-delay: calc(var(--i) * 70ms); }
+.chain li::before { content: counter(step, decimal-leading-zero); grid-row: span 2; display: grid; place-items: center; width: 26px; height: 26px; border: 1px solid var(--select); font-family: var(--mono); font-size: 0.66rem; color: var(--select); background: rgba(1, 7, 13, 0.9); box-shadow: 0 0 10px rgba(255, 197, 61, 0.35); position: relative; z-index: 1; }
+.chain li:not(:last-child)::after { content: ''; position: absolute; left: 12.5px; top: 36px; bottom: -8px; width: 1px; background: linear-gradient(var(--select), transparent); opacity: 0.6; }
+.chain li > span { font-size: 0.94rem; }
+@keyframes rise { from { opacity: 0; transform: translateX(-6px); } }
 @media (max-width: 1000px) { .details { position: static; max-height: none; } }
 </style>

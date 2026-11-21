@@ -56,12 +56,14 @@ watch(() => [props.anchor, props.method], () => {
 </template>
 
 <style scoped>
-.drawer { display: flex; flex-direction: column; gap: 10px; }
-.key { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; border-radius: 10px; background: #0a0f1d; border: 1px solid var(--line); border-left: 3px solid var(--male); }
-.key.fail { border-left-color: var(--female); }
-.key code { font-size: 0.8rem; white-space: pre-wrap; word-break: break-word; }
-.where { font-family: var(--mono); font-size: 0.7rem; color: var(--faint); }
-.toggle { all: unset; cursor: pointer; display: inline-flex; gap: 10px; align-items: baseline; color: var(--male); font-weight: 600; font-size: 0.9rem; }
-.toggle:focus-visible { outline: 2px solid var(--male); outline-offset: 3px; border-radius: 4px; }
-.body { display: flex; flex-direction: column; gap: 10px; }
+.drawer { display: flex; flex-direction: column; gap: 12px; }
+.key { --bk-c: var(--male); --bk: 10px; display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border-radius: var(--radius); background: var(--brackets), var(--code-bg); border: 1px solid rgba(63, 140, 255, 0.3); box-shadow: inset 0 0 30px rgba(63, 140, 255, 0.06); }
+.key.fail { --bk-c: var(--female); border-color: rgba(255, 79, 154, 0.35); box-shadow: inset 0 0 30px rgba(255, 79, 154, 0.06); }
+.key code { font-size: 0.86rem; white-space: pre-wrap; word-break: break-word; line-height: 1.5; }
+.where { font-family: var(--mono); font-size: 0.7rem; color: var(--faint); letter-spacing: 0.04em; }
+.toggle { all: unset; cursor: pointer; display: inline-flex; gap: 10px; align-items: baseline; color: var(--hud); font-weight: 600; font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; }
+.toggle .small { text-transform: none; letter-spacing: 0; font-weight: 400; }
+.toggle:hover { text-shadow: var(--hud-glow); }
+.toggle:focus-visible { outline: 1.5px solid var(--select); outline-offset: 3px; }
+.body { display: flex; flex-direction: column; gap: 12px; }
 </style>

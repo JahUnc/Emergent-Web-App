@@ -30,10 +30,12 @@ const passed = computed(() => rows.value.filter((r) => r.result?.passed).length)
 </template>
 
 <style scoped>
-.tests summary { cursor: pointer; color: var(--muted); font-size: 0.84rem; }
-ul { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: 0.83rem; }
-li { display: flex; gap: 8px; align-items: baseline; }
-.ok { color: var(--good); font-family: var(--mono); font-size: 0.72rem; }
-.no { color: var(--bad); font-family: var(--mono); font-size: 0.72rem; }
-.where { color: var(--faint); font-family: var(--mono); font-size: 0.7rem; margin-left: auto; white-space: nowrap; }
+.tests summary { cursor: pointer; color: var(--muted); font-size: 0.74rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
+.tests summary:hover { color: var(--hud); }
+ul { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 5px; font-size: 0.86rem; }
+li { display: flex; gap: 10px; align-items: baseline; }
+.ok, .no { font-family: var(--mono); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.1em; padding: 0 6px; }
+.ok { color: var(--good); border: 1px solid rgba(61, 255, 180, 0.4); }
+.no { color: var(--bad); border: 1px solid rgba(255, 59, 79, 0.5); }
+.where { color: var(--faint); font-family: var(--mono); font-size: 0.68rem; margin-left: auto; white-space: nowrap; }
 </style>

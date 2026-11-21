@@ -42,12 +42,12 @@ function openSystem(key: string) {
 </template>
 
 <style scoped>
-.strip { display: grid; gap: 8px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--ink-raised); }
+.strip { --bk-c: rgba(79, 216, 255, 0.5); --bk: 10px; display: grid; gap: 10px; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--brackets), var(--panel); }
 .who, .side { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.eyebrow { width: 6.5em; flex: none; }
-button { background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; font-size: 0.8rem; cursor: pointer; color: var(--text); }
-button:hover, button:focus-visible { border-color: var(--select); }
+.eyebrow { width: 8em; flex: none; }
+button { background: transparent; border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 2px 10px; font-size: 0.82rem; cursor: pointer; color: var(--text); transition: border-color 0.2s, color 0.2s, box-shadow 0.2s; }
+button:hover, button:focus-visible { border-color: var(--hud); color: var(--hud); box-shadow: 0 0 10px rgba(79, 216, 255, 0.25); }
 .sys { border-color: var(--line-hi); font-weight: 600; }
-.r { box-shadow: inset 2px 0 0 var(--male); }
-.w { box-shadow: inset 2px 0 0 var(--female); }
+.r { border-color: rgba(63, 140, 255, 0.5); }
+.w { border-color: rgba(255, 79, 154, 0.5); }
 </style>

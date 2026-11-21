@@ -28,8 +28,8 @@ defineSlots<{ default(props: { item: T }): unknown }>();
 
 <style scoped>
 .cases { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
-button { text-align: left; background: var(--ink-raised); border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; cursor: pointer; font-size: 0.86rem; transition: border-color 0.15s, transform 0.15s; }
-button:hover { border-color: var(--line-hi); transform: translateY(-1px); }
-button[aria-checked='true'] { border-color: var(--female); background: #1a1428; }
-:slotted(small) { display: block; color: var(--muted); font-size: 0.75rem; }
+button { --bk-c: transparent; --bk: 8px; text-align: left; background: var(--brackets), var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 13px; cursor: pointer; font-size: 0.9rem; font-weight: 500; transition: border-color 0.2s, box-shadow 0.2s; }
+button:hover { --bk-c: var(--hud); border-color: var(--line-hi); }
+button[aria-checked='true'] { --bk-c: var(--select); border-color: rgba(255, 197, 61, 0.5); background: var(--brackets), rgba(255, 197, 61, 0.1); box-shadow: 0 0 18px rgba(255, 197, 61, 0.15); color: #fff; }
+:slotted(small) { display: block; color: var(--muted); font-family: var(--mono); font-size: 0.68rem; font-weight: 400; margin-top: 2px; }
 </style>
